@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Calculadora de Bônus</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="wordart.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <script src="./index.js"></script>
+    <div id="title">
+      <h1>
+        Calculadora de Bônus
+      </h1>
+    </div>
+    <div id="flex-container">
+      <div id="outer-container">
+          <div id="container">
+
+          </div>
+        <div id="results" style="display: none;">
+          <div>
+            <div>
+              <span class="heading">Percentual total:</span>
+              <span id="calc-details">(lalalal)</span>
+            </div>
+            <div class="wordart italic-outline">
+              <span id="result-value" class="text" style="display: none;"></label>              
+            </div>
+          </div>
+          <hr>
+          <div>
+            <label for="income" class="slider-label">
+              <span>Sua renda:</span>
+              <sup>*</sup>
+            </label>
+            <input id="income" type="text">
+          </div>
+          <div>
+            <div>
+              <span class="heading">Valor total:</span>
+            </div>
+            <div class="wordart italic-outline">
+              <span id="result-amount" class="text" style="display: none;"></label>              
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>
+    <div class="footer"> 
+      <div>
+        <sup>*</sup>
+        <span>Esta página não tem orçamento suficiente para roubar seu salário</span>
+      </div>
+      <div>
+        Github
+      </div>
+    </div>
+  </body>
+</html>

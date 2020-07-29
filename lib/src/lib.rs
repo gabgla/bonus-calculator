@@ -159,6 +159,11 @@ pub fn calculate(base: f64, values: Vec<f64>, income: f64) {
     };
 
     details_span.set_inner_html(&format!("({:.0}% de {:.0}%)", sum * 100f64, base * 100f64));
+    match details_span.set_attribute("style", "") {
+        Err(_) => return,
+        Ok(x) => x
+    };
+
 
     if income <= 0f64 {
         return;

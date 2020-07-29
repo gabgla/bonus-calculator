@@ -3,7 +3,7 @@ Calculadora de bônus para caso você tenha ficado com dúvida
 
 ## Instruções de uso
 
-Basta passa na querystring `?q=` uma string base64 com o formulário a ser montado, usando o padrão `label,valor`.
+Basta passar na querystring `?q=` uma string base64 com o formulário a ser montado, usando o padrão `label,valor`.
 
 Por exemplo, para o base64 codificado `UGVyY2VudHVhbCBCYXNlLDAuNzUKTWV0YSBkZSBWZW5kYXMsMC4zMzMKU2NvcmUgZG8gVXN1w6FyaW8sMC4zMzMKQXZhbGlhw6fDo28gZG8gR2VzdG9yLDAuMzM0`:
 
@@ -11,6 +11,8 @@ Por exemplo, para o base64 codificado `UGVyY2VudHVhbCBCYXNlLDAuNzUKTWV0YSBkZSBWZ
     Meta de Vendas,0.333
     Score do Usuário,0.333
     Avaliação do Gestor,0.334
+
+ [Visualizar](http://bonus.saguinus.net/?q=UGVyY2VudHVhbCBCYXNlLDAuNzUKTWV0YSBkZSBWZW5kYXMsMC4zMzMKU2NvcmUgZG8gVXN1w6FyaW8sMC4zMzMKQXZhbGlhw6fDo28gZG8gR2VzdG9yLDAuMzM0)
 
 ## "Pipeline" de desenvolvimento
 

@@ -22,7 +22,7 @@ Por exemplo, para o base64 codificado `UGVyY2VudHVhbCBCYXNlLDAuNzUKTWV0YSBkZSBWZ
     cargo update
     ./deploy_lib.sh
 
-**Como testar o app:**
+**Como testar o app (após compilar o wasm):**
 
     cd www
     npm install

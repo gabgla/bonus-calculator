@@ -18,9 +18,7 @@ js.then(js => {
     }
 
     const getIncome = () => {
-        const element = document.getElementById("income");
-        const parsed = element.value.replace(/[^\d\.]/g, '');
-        return Number(parsed);
+        return document.getElementById("income").value;
     }
 
     window.register = (id) => {
@@ -37,9 +35,8 @@ js.then(js => {
 
     const income = document.getElementById("income");
     income.addEventListener('input', e => {
-        const value = getIncome();
-        if (value) {
-            js.calculate(state.base, getValues(), value)
+        if (e.target.value) {
+            js.calculate(state.base, getValues(), e.target.value);
         }
     })
 

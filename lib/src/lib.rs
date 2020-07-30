@@ -2,19 +2,43 @@ extern crate wasm_bindgen;
 
 use crate::layout::Layout;
 use crate::layout::LayoutItem;
+use regex::Regex;
 use wasm_bindgen::prelude::*;
 
 mod layout;
 
+#[wasm_bindgen]
+extern {
+    fn register(s: &str);
+}
 
 #[wasm_bindgen]
 pub fn run() -> Result<(), JsValue> {
+    let result = render();
+
+    match result {
+        Ok(_) => return Ok(()),
+        _ => {
+            let window = web_sys::window().expect("no global `window` exists");
+
+            let document = window.document().expect("should have a document on window");
+            let container = document.get_element_by_id("container").expect("no container in app");
+
+            container.set_inner_html("Não consegui montar a tela 😢 </br> Verifique se a url está preenchida com os dados do formulário!");
+
+            return Ok(());
+        }
+    };
+}
+
+
+fn render() -> Result<(), JsValue> {
     let window = web_sys::window().expect("no global `window` exists");
 
     let document = window.document().expect("should have a document on window");
     let container = document.get_element_by_id("container").expect("no container in app");
 
-    let layout = get_layout_from_query(&window);
+    let layout = get_layout_from_query(&window)?;
 
     let header = document.create_element("div")?;
     header.set_id("card-header");
@@ -87,22 +111,21 @@ pub fn run() -> Result<(), JsValue> {
     Ok(())
 }
 
-fn get_layout_from_query(window: &web_sys::Window) -> Layout {
+fn get_layout_from_query(window: &web_sys::Window) -> Result<Layout, &str> {
     let search = window.location().search();
 
     let base64 = match search {
         Ok(v) => v.replace("?q=", ""),
-        _ => panic!("can't parse search"),
+        _ => return Err("não achei a querystring")
     };
+
+    if base64.len() == 0 {
+        return Err("sem dados do formulário");
+    }
 
     let layout = build_layout(base64.as_str());
 
-    return layout
-}
-
-#[wasm_bindgen]
-extern {
-    fn register(s: &str);
+    return Ok(layout);
 }
 
 #[wasm_bindgen]
@@ -110,7 +133,7 @@ pub fn get_base_value() -> f64 {
     let window = web_sys::window().expect("no global `window` exists");
     let layout = get_layout_from_query(&window);
 
-    let value: f64 = *layout.header().value();
+    let value: f64 = *layout.unwrap().header().value();
 
     return value;
 }
@@ -135,7 +158,7 @@ pub fn handle(input: &str, value: f64) {
 }
 
 #[wasm_bindgen]
-pub fn calculate(base: f64, values: Vec<f64>, income: f64) {
+pub fn calculate(base: f64, values: Vec<f64>, income_text: &str) {
     let sum: f64 = values.iter().map(|v| v / 1000f64).sum();
 
     let result = sum * base;
@@ -153,50 +176,51 @@ pub fn calculate(base: f64, values: Vec<f64>, income: f64) {
     };
 
     result_span.set_inner_html(&format!("{:.1}%", result * 100f64));
-    match result_span.set_attribute("style", "") {
-        Err(_) => return,
-        Ok(x) => x
-    };
+    result_span.set_attribute("style", "").unwrap();
 
     details_span.set_inner_html(&format!("({:.0}% de {:.0}%)", sum * 100f64, base * 100f64));
-    match details_span.set_attribute("style", "") {
-        Err(_) => return,
-        Ok(x) => x
-    };
+    details_span.set_attribute("style", "").unwrap();
 
-
-    if income <= 0f64 {
+    
+    let numeric_pattern = Regex::new(r"[^\d\.]").unwrap();    
+    let numeric_part = numeric_pattern.replace_all(income_text, "");
+    
+    if numeric_part.len() == 0 {
         return;
     }
+    
+    let income = numeric_part.parse::<f64>().unwrap();
+    
+    if income >= 0f64 {
+        let amount = income * result;
+        set_value(amount, "result-amount", &document);
+    }
+    
+    let text_pattern = Regex::new(r"[^a-zA-Z]").unwrap();
+    let text_part = text_pattern.replace_all(income_text, "");
 
-    let amount = income * result;
+    console_log(&text_part);
 
-    let amount_span = match document.get_element_by_id("result-amount") {
-        None => return,
-        Some(x) => x
-    };
+    set_text(&text_part, "extra", &document);
+}
 
-    amount_span.set_inner_html(&format!("{:.2}", amount));
-    match amount_span.set_attribute("style", "") {
-        Err(_) => return,
-        Ok(x) => x
-    };
+fn set_value(value: f64, element_id: &str, document: &web_sys::Document) {
+    let element = document.get_element_by_id(element_id).unwrap();
+
+    element.set_inner_html(&format!("{:.2}", value));
+    element.set_attribute("style", "").unwrap();
+}
+
+fn set_text(text: &str, element_id: &str, document: &web_sys::Document) {
+    let element = document.get_element_by_id(element_id).unwrap();
+
+    element.set_inner_html(text);
 }
 
 fn build_layout(input_base64: &str) -> Layout {
-    let result = base64::decode(input_base64);
+    let values = base64::decode(input_base64).unwrap();
 
-    let values = match result {
-        Ok(values) => values,
-        Err(e) => panic!(e),
-    };
-
-    let result = std::str::from_utf8(&values);
-
-    let string_values = match result {
-        Ok(values) => values,
-        Err(e) => panic!(e),
-    };
+    let string_values = std::str::from_utf8(&values).unwrap();
 
     let lines = string_values
         .lines()

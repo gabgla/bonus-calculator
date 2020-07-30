@@ -85,6 +85,12 @@ select {
   font-style: italic;
 }
 
+#extra {
+  display: inline-block;
+  font-style: italic;
+  margin-left: 10px;
+}
+
 .slider-label {
   display: block;
 }
@@ -152,4 +158,8 @@ select {
   color: #ffffff;
   font-size: 10px;
   text-align: center;
+}
+
+.bigger {
+  font-size: 1.5em;
 }

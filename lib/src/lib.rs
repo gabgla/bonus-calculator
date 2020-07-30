@@ -2,7 +2,6 @@ extern crate wasm_bindgen;
 
 use crate::layout::Layout;
 use crate::layout::LayoutItem;
-use regex::Regex;
 use wasm_bindgen::prelude::*;
 
 mod layout;
@@ -182,7 +181,7 @@ pub fn calculate(base: f64, values: Vec<f64>, income_text: &str) {
     details_span.set_attribute("style", "").unwrap();
 
     
-    let numeric_pattern = Regex::new(r"[^\d\.]").unwrap();    
+    let numeric_pattern = regex::Regex::new(r"[^\d\.]").unwrap();    
     let numeric_part = numeric_pattern.replace_all(income_text, "");
     
     if numeric_part.len() == 0 {
@@ -196,10 +195,8 @@ pub fn calculate(base: f64, values: Vec<f64>, income_text: &str) {
         set_value(amount, "result-amount", &document);
     }
     
-    let text_pattern = Regex::new(r"[^a-zA-Z]").unwrap();
+    let text_pattern = regex::Regex::new(r"[^a-zA-Z]").unwrap();
     let text_part = text_pattern.replace_all(income_text, "");
-
-    console_log(&text_part);
 
     set_text(&text_part, "extra", &document);
 }
